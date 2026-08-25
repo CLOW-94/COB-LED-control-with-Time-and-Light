@@ -100,7 +100,8 @@ AVERAGE_SAMPLES = 10
 
 # Main loop and fade settings.
 LOOP_DELAY_MS = 100
-PWM_STEP = 655
+#PWM_STEP = 655 #Slow fade in
+PWM_STEP = 1500
 
 
 # ============================================================
