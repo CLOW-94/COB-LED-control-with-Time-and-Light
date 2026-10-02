@@ -69,8 +69,11 @@ TIMEZONE = "America/Chicago"
 MINUTES_BEFORE_SUNSET = 60
 
 # Automatic lights turn off at 10:30 PM local time.
-AUTO_OFF_HOUR = 22
-AUTO_OFF_MINUTE = 30
+# AUTO_OFF_HOUR = 22
+# AUTO_OFF_MINUTE = 30
+
+AUTO_OFF_HOUR = 21
+AUTO_OFF_MINUTE = 00
 
 # Check GitHub once per local day at or after 3:00 AM.
 OTA_CHECK_HOUR = 3
@@ -84,11 +87,12 @@ OTA_CHECK_MINUTE = 0
 # VEML7700 white reading treated as 100 percent ambient light.
 # Increase if the COB lights dim too easily.
 # Decrease if the COB lights stay too bright in a bright room.
-WHITE_FULL_SCALE = 540
+WHITE_FULL_SCALE = 600
 
 # 16-bit PWM limits: 0 = off, 65535 = full output.
+
 MAX_PWM = 65535
-MIN_PWM = 0
+MIN_PWM = 30000
 
 # True: manual button mode still uses the VEML7700.
 # False: manual button mode uses MANUAL_PWM_PERCENT.
@@ -100,7 +104,6 @@ AVERAGE_SAMPLES = 10
 
 # Main loop and fade settings.
 LOOP_DELAY_MS = 100
-#PWM_STEP = 655 #Slow fade in
 PWM_STEP = 1500
 
 
@@ -370,7 +373,7 @@ def get_automatic_start_minutes():
 
 
 def get_automatic_off_minutes():
-    """Return 10:30 PM as minutes after midnight."""
+    """Return off time as minutes after midnight."""
     return AUTO_OFF_HOUR * 60 + AUTO_OFF_MINUTE
 
 
@@ -546,13 +549,13 @@ def constrain(value, minimum, maximum):
 
 
 def calculate_sensor_pwm(white_reading):
-    """Convert white-light reading to inverse LED PWM."""
+    """Convert white-light reading to set LED PWM. When room is dark, lights are dim."""
     ambient_percent = (
         float(white_reading) / float(WHITE_FULL_SCALE)
     ) * 100.0
     ambient_percent = constrain(ambient_percent, 0.0, 100.0)
 
-    led_target_percent = 100.0 - ambient_percent
+    led_target_percent =  ambient_percent
     target_pwm = int((led_target_percent / 100.0) * MAX_PWM)
     target_pwm = constrain(target_pwm, MIN_PWM, MAX_PWM)
 
@@ -842,3 +845,7 @@ while True:
         print("Manual override cleared.")
         print("Retrying in five seconds.")
         time.sleep(5)
+
+
+
+
